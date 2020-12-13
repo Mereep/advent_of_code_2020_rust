@@ -91,7 +91,7 @@ pub fn task2() {
     }
 
     // We will use the chinese remainder theorem
-    // this finds a `a´ where a = x_n mod m_n hilds for all x_n and m_n
+    // this finds a `a´ where `a = x_n mod m_n´ holds for all x_n and m_n
     let mut moduli: Vec<i128> = Vec::new();         // stores all the m_n
     let mut remainders: Vec<i128> = Vec::new();     // stores all the x_n
 
@@ -108,7 +108,7 @@ pub fn task2() {
         moduli.as_slice(),
     );
 
-    // bad news: the chinese reminder doesn't necessrily find the smalles solution
+    // bad news: the chinese reminder doesn't necessrily find the smallest solution
     // However if we find the least common multiply (lcm) we can reduce the solution
     // to its smallest version bei calculating lcm % a
     let lcm = (&moduli).into_iter().fold(
@@ -166,7 +166,7 @@ fn get_input_data() -> &'static str {
 
 
 
-/// Chinese reminder calculation
+/// Chinese reminder theorem calculations
 fn chinese_remainder(residues: &[i128], modulii: &[i128]) -> Option<i128> {
     let prod = modulii.iter().product::<i128>();
 
