@@ -62,8 +62,8 @@ pub fn task2() {
     let file_contents = get_input_data();
     let lines = str_to_lines(file_contents);
 
-    let mut offsets = HashMap::<u64, u64>::new();
 
+    // We read al busses from the input (split by `,´)
     let bus_ids: Vec<&str> = lines[1]
         .split(',')
         .into_iter()
@@ -72,9 +72,13 @@ pub fn task2() {
     // The basic idea is to use the chinese remainder theorem to find a time
     // where the different busses are one minute apart each (while interval 'x') does not matter)
 
-    // Save the highest bus id
+    // Save the highest bus id (only relevant for the naive solution
+    // since it will be our smallest increment for brute force
     let mut highest_bus_id: u64 = 0;
 
+    // Build a lookup which is points from bus_id => position (index) within the input list
+    // s.t. [10, 3, x, 5] would be (10 => 0, 3=>1, 5=>3)
+    let mut offsets = HashMap::<u64, u64>::new();
     for (i, bus_id) in bus_ids.into_iter().enumerate() {
         if bus_id != "x" {
             let current_bus_id: u64 = bus_id.parse::<u64>().expect("Couldn't parse bus id");
@@ -86,27 +90,38 @@ pub fn task2() {
         }
     }
 
-    let mut moduli: Vec<i128> = Vec::new();
-    let mut remainders: Vec<i128> = Vec::new();
+    // We will use the chinese remainder theorem
+    // this finds a `a´ where a = x_n mod m_n hilds for all x_n and m_n
+    let mut moduli: Vec<i128> = Vec::new();         // stores all the m_n
+    let mut remainders: Vec<i128> = Vec::new();     // stores all the x_n
 
-    // find all modulus
+    // each bus should come each separated by one minute times their list position
+    // so the moduli is the bus_id (=interval) and the remainder is the list position
     for (bus_id, offset) in (&offsets).into_iter() {
         moduli.push((*bus_id) as i128);
         remainders.push((*offsets.get(bus_id).unwrap()) as i128);
     }
 
+    // Calculate the chinese remainder
     let a = chinese_remainder(
         remainders.as_slice(),
         moduli.as_slice(),
     );
 
-    let lcm = (&moduli).into_iter().fold( moduli[0], |a, b| lcm(a.clone(), b.clone()));
-    println!("{:?}", lcm % a.unwrap());
+    // bad news: the chinese reminder doesn't necessrily find the smalles solution
+    // However if we find the least common multiply (lcm) we can reduce the solution
+    // to its smallest version bei calculating lcm % a
+    let lcm = (&moduli).into_iter().fold(
+        moduli[0], |a, b| lcm(a.clone(), b.clone()));
+
+    println!("Smallest time offset: {:?}", lcm % a.unwrap());
     println!("LCM: {:?}", lcm);
     println!("Modulus {:?}", moduli);
     println!("Remainders {:?}", remainders);
 
-    /* Naive solution (Does calculate tooooo
+    /*
+    // Naive solution (Does calculate way too slow for bigger inputs)
+    // Will likely take a day or so to find it
 
     let mut run_id: u64 = 1;
     let offset_of_highest_bus_id = offsets.get(&highest_bus_id)
@@ -151,7 +166,7 @@ fn get_input_data() -> &'static str {
 
 
 
-
+/// Chinese reminder calculation
 fn chinese_remainder(residues: &[i128], modulii: &[i128]) -> Option<i128> {
     let prod = modulii.iter().product::<i128>();
 
