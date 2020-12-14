@@ -129,12 +129,15 @@ fn fill_memory(memory: &mut HashMap<u64, u64>,
 }
 
 /// Will apply the mask_1 as an logical OR to the value
-/// and also applies NOT mask_1 as an logical AND
+/// and also applies NOT mask_0 as an logical AND
+///
+/// This switches all bits of value,
+/// where [mask_1] is 1 to 1 and all bits where [mask_0] is 1 to 0
 fn apply_masks_to_value (value: u64, mask_1: &u64, mask_0: &u64) -> u64 {
     return (value | mask_1) & (!mask_0);
 }
 
-/// Will parse a line like mem[8] = 12
+/// Will parse a line like `mem[8] = 12´
 ///
 /// returns for the given example: `(8, 12)´
 fn parse_line_memory(line: &str) -> (u64, u64) {
