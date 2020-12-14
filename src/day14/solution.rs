@@ -75,7 +75,7 @@ pub fn task2() {
 
         }
     }
-    println!("Memory: {:?}; Sum: {}", memory, memory.values().sum::<u64>());
+    println!("Sum of memory: {}", memory.values().sum::<u64>());
 }
 
 /// The idea here is that each true bit in the [floating_mask] will
@@ -165,7 +165,7 @@ fn parse_line_mask(line: &str) -> (u64, u64, u64){
     for char in line.bytes().skip(7) {
         if char == '1' as u8 {
             mask_1 |= (1 as u64) << (current_exponent - 1)
-        }else if char == '0' as u8 {
+        } else if char == '0' as u8 {
             mask_0 |= (1 as u64) << (current_exponent - 1)
         } else if char == 'X' as u8 {
             mask_x |= (1 as u64) << (current_exponent - 1)
