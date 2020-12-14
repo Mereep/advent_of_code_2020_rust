@@ -31,7 +31,6 @@ pub fn task1() {
     }
 
     println!("Trees hit: {}", n_trees);
-
 }
 
 // Basically the same as [task1]
