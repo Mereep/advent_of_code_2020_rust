@@ -42,7 +42,7 @@ pub fn task1(n_rounds: Option<usize>) {
         }
     }
 
-    println!("Last inserted number: {} (after {} rounds)", last_inserted_number, i);
+    println!("Last inserted number: {}", last_inserted_number);
 }
 
 
