@@ -175,17 +175,13 @@ fn parse_rule(rule_line: &str) -> Rule {
     );
 }
 
-/// Gets all indices of [ticket] where none of [rules] applies
+/// Gets all indices of [ticket] where none(!) of [rules] applies
 fn get_invalid_rules_for_ticket(ticket: &Vec<u64>, rules: &Vec<Rule>) -> Vec<usize> {
     let mut failed_tickets : Vec<usize> = Vec::new();
     for (i, ticket_value) in ticket.iter().enumerate() {
         let mut found_a_valid_rule = false;
         for rule in rules {
-            let from1 = rule.1.0;
-            let to1 = rule.1.1;
-            let from2 = rule.2.0;
-            let to2 = rule.2.1;
-            if (*ticket_value >= from1 && *ticket_value <= to1) || (*ticket_value >= from2 && *ticket_value <= to2)  {
+            if applies(&rule, ticket_value)  {
                 found_a_valid_rule = true;
                 break;
             }
