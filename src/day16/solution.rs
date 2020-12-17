@@ -45,7 +45,6 @@ pub fn task2() {
         .filter(|ticket| get_invalid_rules_for_ticket(ticket, &rules).len() == 0)
         .collect();
 
-
     // Stores a lookup table in the form of `rule -> [columns_where_rules_apply]´
     let mut rules_to_valid_columns: HashMap<String, Vec<usize>> = HashMap::new();
 
