@@ -11,13 +11,24 @@ struct IndexType(Vec::<i64>);
 // returns format as `x.y.z´
 impl ToString for IndexType {
     fn to_string(&self) -> String {
+
+        // We optimize this call a bit by some const transformations for 3 and 4 dims
+        let len = self.0.len();
+        if len == 3 {
+            return format!("{}.{}.{}", &self.0[0], &self.0[1], &self.0[2]);
+        } else if len == 4 {
+            return format!("{}.{}.{}.{}", &self.0[0], &self.0[1], &self.0[2], &self.0[3]);
+        }
+
+        self.0.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(".")
+        /* Iterative variant
         let mut s = String::new();
         for i in &self.0 {
             s += &format!("{}.", i);
         }
 
         s.remove(s.len() - 1);
-        s
+        s*/
     }
 }
 
@@ -167,14 +178,14 @@ impl Field {
     }
 
     fn step3d(&mut self) {
-        let mut new_field = self.field.clone();
+        let mut new_field = HashMap::new();
         let (from, to) = self.get_extends();
         for x in range(from.0.get(0).unwrap() - 1, to.0.get(0).unwrap() + 2) {
             for y in range(from.0.get(1).unwrap() - 1, to.0.get(1).unwrap() + 2) {
                 for z in range(from.0.get(2).unwrap() - 1, to.0.get(2).unwrap() + 2) {
                     let val = self.get_field_value(&IndexType(vec!(x,y,z)));
                     let index = IndexType(vec![x,y,z]);
-                    let (active, inactive) = self.get_neighbours_3d(&index);
+                    let (active, _) = self.get_neighbours_3d(&index);
 
                     let mut new_val = true;
                     if val {
@@ -187,7 +198,9 @@ impl Field {
                         }
                     }
 
-                    new_field.insert(index.to_string(), new_val);
+                    if new_val {
+                        new_field.insert(index.to_string(), new_val);
+                    }
                 }
             }
         }
@@ -195,16 +208,15 @@ impl Field {
     }
 
     fn step4d(&mut self) {
-        let mut new_field = self.field.clone();
+        let mut new_field = HashMap::new();
         let (from, to) = self.get_extends();
         for x in range(from.0.get(0).unwrap() - 1, to.0.get(0).unwrap() + 2) {
             for y in range(from.0.get(1).unwrap() - 1, to.0.get(1).unwrap() + 2) {
                 for z in range(from.0.get(2).unwrap() - 1, to.0.get(2).unwrap() + 2) {
                     for d in range(from.0.get(3).unwrap() - 1, to.0.get(3).unwrap() + 2) {
-
-                        let val = self.get_field_value(&IndexType(vec!(x, y, z, d)));
                         let index = IndexType(vec![x, y, z, d]);
-                        let (active, inactive) = self.get_neighbours_4d(&index);
+                        let val = self.get_field_value(&index);
+                        let (active, _) = self.get_neighbours_4d(&index);
                         let mut new_val = true;
 
                         if val {
@@ -216,8 +228,9 @@ impl Field {
                                 new_val = false;
                             }
                         }
-
-                        new_field.insert(index.to_string(), new_val);
+                        if new_val {
+                            new_field.insert(index.to_string(), new_val);
+                        }
                     }
                 }
             }

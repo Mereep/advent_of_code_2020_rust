@@ -32,6 +32,6 @@ fn main() {
     // day16::task1();
     // day16::task2();
 
-    // day17::task1();
+    day17::task1();
     day17::task2();
 }
