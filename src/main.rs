@@ -9,7 +9,8 @@ pub mod files;
 // #[path="day14/solution.rs"] mod day14;
 // #[path="day15/solution.rs"] mod day15;
 //#[path="day16/solution.rs"] mod day16;
-#[path="day17/solution.rs"] mod day17;
+// #[path="day17/solution.rs"] mod day17;
+#[path="day18/solution.rs"] mod day18;
 
 fn main() {
     // To run a specific day, just uncomment the task you need
@@ -32,6 +33,9 @@ fn main() {
     // day16::task1();
     // day16::task2();
 
-    day17::task1();
-    day17::task2();
+    // day17::task1();
+    // day17::task2();
+
+    day18::task1(false);
+    day18::task2();
 }
